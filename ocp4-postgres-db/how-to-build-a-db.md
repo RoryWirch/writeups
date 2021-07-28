@@ -38,12 +38,13 @@ After selecting PostgreSQL, select the instantiate template button.
 
 This leads to a form with details about how the database will be configured. 
 
-<img align=left src="docs/add-db-instantiate-1.png" /> 
-Fill out the fields depending on your needs. Note that the username and password will be automatically generated if left empty. 
+- Fill out the fields depending on your needs. Note that the username and password will be automatically generated if left empty. 
 
-The username and password can be found later on in the secrets tab in OCP4.
+- The username and password can be found later on in the secrets tab in OCP4.
 
-Once finished, click the create button at the end of the form.
+- Once finished, click the create button at the end of the form.
+
+<img src="docs/add-db-instantiate-1.png" /> 
 <img src="docs/add-db-instantiate-2.png" />
 
 **Adding a Persistent Volume Claim**
@@ -58,12 +59,18 @@ You will be brought to a page where you can configure your PVC.
 - Make sure that the name is "postgresql" so that the container can find and then mount the PVC. 
 - Depending on the storage class that you choose, you can select a shared access mode which will allow multiple clients to have access to the PVC. This mode is selected here because we want to be able to write to the PVC and we want Grafana to be able to read from the database.
 - The "Size" is the amount of storage being allocated. This should match the amount allocated when we configured the database under "Volume Capacity". 
+- Once finished click the create button. The PVC will be created and your PostgreSQL container should be able to run.
 
 <img src="docs/add-pvc-1.png" />
 
+**Check that the container is running**
+
+In the OpenShift web interface switch to the developer perspective, then navigate to the topology tab. There should be a bubble labeled "postgresql". Click the bubble and then navigate to the "Resources" panel on the right. There you should see that it is running.
+
+<img src="docs/postgres-running.png" />
 
 
-
+## Interacting with our database
 
 
 
