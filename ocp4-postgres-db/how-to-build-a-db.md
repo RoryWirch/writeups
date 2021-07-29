@@ -11,7 +11,7 @@ Ceph Build Team: Brew Build Times Project
 4. How to populate the database with csv files
 5. Glossary
 
-##1. Introduction and Justification
+## 1. Introduction and Justification
 
 The visualization for the brew build time analysis project has been done using Grafana on an OCP4 instance. One of our experiments with the project involved studying whether lines of code for the Ceph project impacted brew build times. To study this,a tool was used to collect data on the lines of code in each Ceph version. This produced a csv file that included Ceph version numbers, git hashes, and a break down of the lines of code. 
 
@@ -19,11 +19,12 @@ This data needed to be included in grafana as a datasource in order to be used f
 
 The next approach to getting the data into grafana was to build a small database in OCP4 to be used as a datasource in grafana. This writeup will cover all steps in building and populating a postgres database in OCP4.
 
-##2. Setting up a postgres container and PVC in OCP4
+## 2. Setting up a postgres container and PVC in OCP4
 
 For this step, you will need access to an OpenShift project. For this write up, I will be using OCP4. I will include screenshots of the web interface for all steps.
 
 **Adding a Postgres Container**
+
 To add a postgres container using the web interface, navigate to the add tab and then select database from the options.
 
 ![Add tab on ocp4](docs/add-db-1.png)
@@ -69,7 +70,7 @@ In the OpenShift web interface switch to the developer perspective, then navigat
 
 <img src="docs/postgres-running.png" />
 
-##3. How to connect the database to pgAdmin 4
+## 3. How to connect the database to pgAdmin 4
 
 By this point we have PostgreSQL running in OCP4. What we need to do now is populate it with data. To do this we will use port forwarding and pgAdmin 4.
 
@@ -88,6 +89,7 @@ Run the command ```oc get pods```, the output should look similar to this:
 The underlined output is the name of my PostgreSQL pod. Yours will look similar to this, but will not be an exact match.
 
 The command we will run to do our port forwarding has the following format:
+
 ```oc port-forward <pod-name> <local-port>:<remote-port>```
 
 The PostgreSQL database will be running on port 5432. I will be exposing it to my local port 15432, however you can use any open port on your local machine. The command I'll run on my machine will be:
@@ -121,7 +123,7 @@ Once you have added the username and password, click save and your database shou
 
 I added my database with the name ```ocp-postgresql```, which can be seen in the above picture. The database name is sampledb, this is where we will add tables and add data from csv files.
 
-##4. How to populate the database with csv files
+## 4. How to populate the database with csv files
 
 
 
@@ -129,7 +131,7 @@ I added my database with the name ```ocp-postgresql```, which can be seen in the
 
 
 
-##5. Glossary
+## 5. Glossary
 
 Definitions for all those pesky technical terms
 
