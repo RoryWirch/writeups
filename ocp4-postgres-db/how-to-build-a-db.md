@@ -7,11 +7,11 @@ Ceph Build Team: Brew Build Times Project
 ## Outline:
 1. Introduction and justification
 2. Setting up a postgres container and PVC in OCP4
-3. How to interact with the database using port forwarding and pgadmin4
-4. How to populate the database
+3. How to connect the database to pgAdmin 4
+4. How to populate the database with csv files
 5. Glossary
 
-## Introduction and Justification
+##1. Introduction and Justification
 
 The visualization for the brew build time analysis project has been done using Grafana on an OCP4 instance. One of our experiments with the project involved studying whether lines of code for the Ceph project impacted brew build times. To study this,a tool was used to collect data on the lines of code in each Ceph version. This produced a csv file that included Ceph version numbers, git hashes, and a break down of the lines of code. 
 
@@ -19,7 +19,7 @@ This data needed to be included in grafana as a datasource in order to be used f
 
 The next approach to getting the data into grafana was to build a small database in OCP4 to be used as a datasource in grafana. This writeup will cover all steps in building and populating a postgres database in OCP4.
 
-## Setting up the container and PVC
+##2. Setting up a postgres container and PVC in OCP4
 
 For this step, you will need access to an OpenShift project. For this write up, I will be using OCP4. I will include screenshots of the web interface for all steps.
 
@@ -69,17 +69,75 @@ In the OpenShift web interface switch to the developer perspective, then navigat
 
 <img src="docs/postgres-running.png" />
 
+##3. How to connect the database to pgAdmin 4
 
-## Interacting with our database
+By this point we have PostgreSQL running in OCP4. What we need to do now is populate it with data. To do this we will use port forwarding and pgAdmin 4.
+
+Go to the [pgAdmin 4 website](https://www.pgadmin.org/) and download and install a version that will work on your machine.
+
+To access the database with pgAdmin we need to create a temporary connection to it using port forwarding. We will be using a terminal and the OpenShift CLI. 
+
+**Port forwarding**
+
+In order to use port forwarding, we need to be connected to the OpenShift cluster by using the ```oc login``` command. We will also need to have the pod name of our PostgreSQL pod.
+
+Run the command ```oc get pods```, the output should look similar to this:
+
+<img src="docs/oc-get-pods.png" />
+
+The underlined output is the name of my PostgreSQL pod. Yours will look similar to this, but will not be an exact match.
+
+The command we will run to do our port forwarding has the following format:
+```oc port-forward <pod-name> <local-port>:<remote-port>```
+
+The PostgreSQL database will be running on port 5432. I will be exposing it to my local port 15432, however you can use any open port on your local machine. The command I'll run on my machine will be:
+
+```oc port-forward postgresql-1-qd4cl 15432:5432```
+
+The output should look something like this:
+
+<img src="docs/oc-port-forward.png" />
+
+The terminal that you run the port forwarding command in will need to remain active for as long as you need this connection. Once we're finished with the tutorial we can close this terminal or terminate it by using ```ctrl-c``` in the terminal.
+
+At this point we can access our PostgreSQL database through ```127.0.0.1:15432```
+
+**Adding a server in pgAdmin 4**
+
+To add a server to pgAdmin, click the Object tab > Create > Server...
+<img src="docs/pg-admin-add-server-1.png" />
+
+This will bring a pop up where you can configure the connection to the PostgreSQL server. The host name/ address will be ```127.0.0.1``` and the port will be ```15432``` or the local port you chose earlier.  
+
+<img src="docs/pg-admin-add-server-2.png" />
+
+The username and password that I have were automatically generated when setting up PostgreSQL. They can be found on OpenShift under the "Secrets" tab. Search for "postgresql", the username, password, and database name can be found there.
+
+<img src="docs/ocp-secrets.png" />
+
+Once you have added the username and password, click save and your database should now be connected to pgAdmin!
+
+<img src="docs/pg-admin-connected-db.png" />
+
+I added my database with the name ```ocp-postgresql```, which can be seen in the above picture. The database name is sampledb, this is where we will add tables and add data from csv files.
+
+##4. How to populate the database with csv files
 
 
 
-## Glossary
 
-Definitions of all those pesky technical terms
 
-PVC: Persistant volume claim
 
-OCP4: Openshift Container Platform 4
 
-Namespace:
+##5. Glossary
+
+Definitions for all those pesky technical terms
+
+PVC
+: Persistant volume claim
+
+OCP4
+: Openshift Container Platform 4
+
+Namespace
+: 
