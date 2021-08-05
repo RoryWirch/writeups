@@ -68,7 +68,7 @@ You will be brought to a page where you can configure your PVC.
 
 In the OpenShift web interface switch to the developer perspective, then navigate to the topology tab. There should be a bubble labeled "PostgreSQL". Click the bubble and then navigate to the "Resources" panel on the right. There you should see that it is running.
 
-<img src="docs/PostgreSQL-running.png" />
+<img src="docs/postgres-running.png" />
 
 ## 3. How to connect the database to pgAdmin 4
 
