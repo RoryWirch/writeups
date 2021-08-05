@@ -1,12 +1,12 @@
-# How to build a postgres database in OCP4
+# How to build a PostgreSQL database in OCP4
 
-Rory Wirch, July 2021
-Red Hat
-Ceph Build Team: Brew Build Times Project
+Rory Wirch, July 2021 \
+Red Hat \
+Ceph Build Team: Brew Build Times Project \
 
 ## Outline:
 1. Introduction and justification
-2. Setting up a postgres container and PVC in OCP4
+2. Setting up a PostgreSQL pod and PVC in OCP4
 3. How to connect the database to pgAdmin 4
 4. How to populate the database with csv files
 5. Glossary
@@ -15,17 +15,17 @@ Ceph Build Team: Brew Build Times Project
 
 The visualization for the brew build time analysis project has been done using Grafana on an OCP4 instance. One of our experiments with the project involved studying whether lines of code for the Ceph project impacted brew build times. To study this,a tool was used to collect data on the lines of code in each Ceph version. This produced a csv file that included Ceph version numbers, git hashes, and a break down of the lines of code. 
 
-This data needed to be included in grafana as a datasource in order to be used for visualization. The problem was that grafana does not support using csv files as datasources. There is a plugin that allows for csv's to be used as datasources, however after some testing it was determined that the plugin would not be useful without a lot of time tinkering with it and the grafana container.
+This data needed to be included in grafana as a datasource in order to be used for visualization. The problem was that grafana does not support using csv files as datasources. There is a plugin that allows for csv's to be used as datasources, however after some testing it was determined that the plugin would not be useful without a lot of time tinkering with it and the grafana pod.
 
-The next approach to getting the data into grafana was to build a small database in OCP4 to be used as a datasource in grafana. This writeup will cover all steps in building and populating a postgres database in OCP4.
+The next approach to getting the data into grafana was to build a small database in OCP4 to be used as a datasource in grafana. This writeup will cover all steps in building and populating a PostgreSQL database in OCP4.
 
-## 2. Setting up a postgres container and PVC in OCP4
+## 2. Setting up a PostgreSQL pod and PVC in OCP4
 
 For this step, you will need access to an OpenShift project. For this write up, I will be using OCP4. I will include screenshots of the web interface for all steps.
 
-**Adding a Postgres Container**
+**Adding a PostgreSQL pod**
 
-To add a postgres container using the web interface, navigate to the add tab and then select database from the options.
+To add a PostgreSQL pod using the web interface, navigate to the add tab and then select database from the options.
 
 ![Add tab on ocp4](docs/add-db-1.png)
 
@@ -50,25 +50,25 @@ This leads to a form with details about how the database will be configured.
 
 **Adding a Persistent Volume Claim**
 
-For the postgres container to run it will also require a persistent volume claim (PVC). This will allocate storage space for our PostgreSQL container to use.
+For the PostgreSQL pod to run it will also require a persistent volume claim (PVC). This will allocate storage space for our PostgreSQL pod to use.
 
 To add a PVC in OpenShift, navigate to the Administrator section, then open the Storage tab and click the "Create Persistent Volume Claim" button in the top right corner of the page.
 
 <img src="docs/create-pvc.png" />
 
 You will be brought to a page where you can configure your PVC. 
-- Make sure that the name is "postgresql" so that the container can find and then mount the PVC. 
+- Make sure that the name is "PostgreSQL" so that the pod can find and then mount the PVC. 
 - Depending on the storage class that you choose, you can select a shared access mode which will allow multiple clients to have access to the PVC. This mode is selected here because we want to be able to write to the PVC and we want Grafana to be able to read from the database.
 - The "Size" is the amount of storage being allocated. This should match the amount allocated when we configured the database under "Volume Capacity". 
-- Once finished click the create button. The PVC will be created and your PostgreSQL container should be able to run.
+- Once finished click the create button. The PVC will be created and your PostgreSQL pod should be able to run.
 
 <img src="docs/add-pvc-1.png" />
 
-**Check that the container is running**
+**Check that the pod is running**
 
-In the OpenShift web interface switch to the developer perspective, then navigate to the topology tab. There should be a bubble labeled "postgresql". Click the bubble and then navigate to the "Resources" panel on the right. There you should see that it is running.
+In the OpenShift web interface switch to the developer perspective, then navigate to the topology tab. There should be a bubble labeled "PostgreSQL". Click the bubble and then navigate to the "Resources" panel on the right. There you should see that it is running.
 
-<img src="docs/postgres-running.png" />
+<img src="docs/PostgreSQL-running.png" />
 
 ## 3. How to connect the database to pgAdmin 4
 
@@ -151,7 +151,7 @@ Repeat this process to create another table named "build_info" with the followin
 - completion_time : timestamp without timezone
 - creation_time : timestamp without timezone
 
-Once you've done this, your tables tab should look like this. The table names and column names have been hilighted.
+Once you've done this, your tables tab should look like this. The table names and column names have been highlighted.
 
 <img src="docs/pg-admin-finished-tables.png"/>
 
@@ -208,6 +208,3 @@ PVC
 
 OCP4
 : Openshift Container Platform 4
-
-Namespace
-: 
