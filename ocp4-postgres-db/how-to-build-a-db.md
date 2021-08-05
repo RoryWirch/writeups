@@ -2,7 +2,7 @@
 
 Rory Wirch, July 2021 \
 Red Hat \
-Ceph Build Team: Brew Build Times Project \
+Ceph Build Team: Brew Build Times Project
 
 ## Outline:
 1. Introduction and justification
