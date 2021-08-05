@@ -125,9 +125,77 @@ I added my database with the name ```ocp-postgresql```, which can be seen in the
 
 ## 4. How to populate the database with csv files
 
+At this point we have built a PostgreSQL database in OpenShift and connected it to pgAdmin 4. Now we need to add tables and add some test data from csv files. These files can be found in the test-data folder in this directory.
 
+**Creating a table in pgAdmin**
 
+To add a table to PostgreSQL using pgAdmin, click databases > sampledb > schemas > public then right click on the "Table", then click "Create" and then click on "Table". This will open a window to configure your new table.
+<img src="docs/pg-admin-create-table.png"/>
 
+The create table window will have a "General" tab where a table name can be added. The first table created is named "loc_data".
+
+<img src="docs/pg-admin-create-table-2.png"/>
+
+In the same window there is a "Columns" tab, this is where we will add columns for the table. The table "loc_data" will have the following names and data types
+- loc_version : text
+- cpp : integer
+- c_cpp_header : integer
+- python : integer
+
+<img src="docs/pg-admin-create-table-columns.png"/>
+
+Once the columns are added, save the table by clicking the save button on the bottom right of the window.
+
+Repeat this process to create another table named "build_info" with the following columns and data types.
+- ceph_version : text
+- completion_time : timestamp without timezone
+- creation_time : timestamp without timezone
+
+Once you've done this, your tables tab should look like this. The table names and column names have been hilighted.
+
+<img src="docs/pg-admin-finished-tables.png"/>
+
+**Populating the database with csv files**
+
+There are two test files that we are going to use to populate our database: "build-times-test-data.csv" and "loc-test-data.csv". These files can be found in the "test-data" folder in this repository.
+
+We will populate the "build_info" table with data from the "build-times-test-data.csv" file first.
+
+Right click the table name, and click "Import/Export..." as shown below
+
+<img src="docs/pg-admin-imp-exp1.png"/>
+
+After clicking "Import/Export..." a window will apear. 
+- Toggle the "Import/Export" button at the top of the window so we can import a file. 
+- Add the file path to the "build-times-test-data.csv" file.
+- Toggle the header button to "Yes".
+- Select "," as the delimiter.
+
+<img src="docs/pg-admin-imp-exp2.png"/>
+
+Switch to the "Columns" tab at the top of the window. 
+
+<img src="docs/pg-admin-imp-exp3.png"/>
+
+Make sure that the columns that are being imported match the column names that are used in the table.
+
+Click the ok button at the bottom of the page. The window will close, and a success message should appear.
+
+<img src="docs/pg-admin-imp-exp-success.png"/>
+
+This process needs to be repeated for the "loc_data" table. The process is the same, except that the file path needs to point to the "loc-test-data.csv" file.
+
+**Running basic queries in pgAdmin to check the data**
+
+To run a query in pgAdmin, you need to open up the query tool by clicking the query tool button pictured below.
+
+We will run the following query in pgAdmin ```SELECT * FROM public.build_info;``` To run the query, click the run button near the top right of the window. This query will return all the rows that we have in the "build_info" table.
+
+<img src="docs/pg-admin-query-tool.png"/>
+
+Do the same with the "loc_data" table, instead using ```SELECT * FROM public.loc_data;``` as your query. This should return all of the rows in the "loc_data" table.
+
+We have successfully added all the data that we need from two csv files. This database can now be used in Grafana as a datasource, and the data can be visualized there.
 
 
 
